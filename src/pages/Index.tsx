@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import ConnectionButton from "@/components/ConnectionButton";
 import ServerList, { Server } from "@/components/ServerList";
@@ -338,8 +337,10 @@ const Index = () => {
       <Header 
         userName="Usuário"
         onOpenMenu={() => {}}
-        onOpenSettings={() => setMode("contato")}
+        onOpenSettings={() => setMode("configuracao")}
         onOpenProfile={() => {}}
+        onOpenBatteryOptimization={() => setMode("bateria")}
+        onOpenContactInfo={() => setMode("contato")}
       />
       <div className="flex justify-end pr-2 pt-3">
         <a

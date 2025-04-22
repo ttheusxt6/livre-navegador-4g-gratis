@@ -1,7 +1,14 @@
 
 import React from "react";
-import { User, Settings, Menu } from "lucide-react";
+import { User, Settings, Menu, MoreVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   userName?: string;
@@ -9,6 +16,8 @@ interface HeaderProps {
   onOpenSettings: () => void;
   onOpenProfile: () => void;
   className?: string;
+  onOpenBatteryOptimization?: () => void;
+  onOpenContactInfo?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -16,8 +25,12 @@ const Header: React.FC<HeaderProps> = ({
   onOpenMenu,
   onOpenSettings,
   onOpenProfile,
+  onOpenBatteryOptimization,
+  onOpenContactInfo,
   className,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <header
       className={cn(
@@ -41,6 +54,34 @@ const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label="Opções adicionais"
+              >
+                <MoreVertical className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => {
+                onOpenBatteryOptimization && onOpenBatteryOptimization();
+              }}>
+                Otimização de Bateria
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => {
+                onOpenSettings && onOpenSettings();
+              }}>
+                Configurações
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => {
+                onOpenContactInfo && onOpenContactInfo();
+              }}>
+                Contato e Suporte
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
           <button
             onClick={onOpenSettings}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
