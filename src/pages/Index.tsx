@@ -5,6 +5,7 @@ import ConnectionStats from "@/components/ConnectionStats";
 import Header from "@/components/Header";
 import AdvancedOptions from "@/components/AdvancedOptions";
 import { toast } from "@/hooks/use-toast";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const dummyServers: Server[] = [
   {
@@ -162,12 +163,23 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="absolute top-2 right-2 z-10">
+        <ThemeToggle />
+      </div>
       <Header 
         userName="Usuário"
         onOpenMenu={() => {}}
         onOpenSettings={() => {}}
         onOpenProfile={() => {}}
       />
+      <div className="flex justify-end pr-2 pt-3">
+        <a
+          href="/login"
+          className="text-xs px-3 py-1 rounded-full bg-vpn-blue text-white font-medium shadow hover:bg-blue-900 transition"
+        >
+          Login
+        </a>
+      </div>
       <div className="flex-1 container mx-auto px-2 py-4 flex flex-col">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-center text-gray-800">
