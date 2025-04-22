@@ -1,6 +1,7 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ConnectionButtonProps {
   isConnected: boolean;
@@ -15,6 +16,8 @@ const ConnectionButton: React.FC<ConnectionButtonProps> = ({
   onClick,
   className,
 }) => {
+  const isMobile = useIsMobile();
+  
   const buttonText = isConnecting
     ? "Conectando..."
     : isConnected
@@ -24,21 +27,28 @@ const ConnectionButton: React.FC<ConnectionButtonProps> = ({
   const buttonColor = isConnected
     ? "from-vpn-connected to-vpn-teal"
     : "from-vpn-blue to-vpn-lightBlue";
+    
+  const buttonSize = isMobile ? "w-24 h-24" : "w-32 h-32";
+  const textSize = isMobile ? "text-base" : "text-lg";
 
   return (
     <button
       onClick={onClick}
       disabled={isConnecting}
       className={cn(
-        "relative w-32 h-32 rounded-full bg-gradient-to-br shadow-lg",
+        "relative rounded-full bg-gradient-to-br shadow-lg",
+        buttonSize,
         buttonColor,
-        "flex items-center justify-center text-white font-bold text-lg",
-        "transition-all duration-300 transform hover:scale-105",
+        "flex items-center justify-center text-white font-bold",
+        textSize,
+        "transition-all duration-300 transform hover:scale-105 active:scale-95",
         "focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800",
         "disabled:opacity-70 disabled:cursor-not-allowed",
+        "touch-manipulation tap-highlight-transparent",
         className
       )}
       aria-label={buttonText}
+      style={{WebkitTapHighlightColor: 'transparent'}}
     >
       <div className="absolute inset-0 rounded-full border-4 border-transparent">
         {isConnected && (
