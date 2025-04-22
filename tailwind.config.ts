@@ -28,6 +28,15 @@ export default {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
+				vpn: {
+					blue: '#1E40AF',
+					green: '#059669',
+					teal: '#0D9488',
+					lightBlue: '#3B82F6',
+					darkBlue: '#1E3A8A',
+					connected: '#10B981',
+					disconnected: '#EF4444',
+				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
