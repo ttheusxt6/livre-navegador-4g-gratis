@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Check, Download, Signal } from "lucide-react";
+import { Check, Download, Signal, Wifi, Network } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface Server {
@@ -11,6 +11,8 @@ export interface Server {
   ping: number;
   isAvailable: boolean;
   isDownloaded: boolean;
+  networkType: "4G" | "5G";
+  method?: string;
 }
 
 interface ServerListProps {
@@ -30,7 +32,7 @@ const ServerList: React.FC<ServerListProps> = ({
 }) => {
   return (
     <div className={cn("rounded-lg overflow-hidden", className)}>
-      <h2 className="text-lg font-bold mb-2 text-gray-800 dark:text-gray-200">Arquivos de Conexão 4G</h2>
+      <h2 className="text-lg font-bold mb-2 text-gray-800 dark:text-gray-200">Arquivos de Conexão 4G/5G</h2>
       <div className="space-y-2">
         {servers.map((server) => (
           <div
@@ -51,8 +53,25 @@ const ServerList: React.FC<ServerListProps> = ({
                 )}
               />
               <div>
-                <div className="font-medium text-gray-800 dark:text-gray-200">{server.name}</div>
+                <div className="font-medium text-gray-800 dark:text-gray-200">
+                  {server.name}
+                  <span className={cn(
+                    "ml-2 text-xs px-1.5 py-0.5 rounded",
+                    server.networkType === "5G" 
+                      ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
+                      : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                  )}>
+                    {server.networkType}
+                  </span>
+                </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">{server.description}</div>
+                {server.method && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <span className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">
+                      {server.method}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
             
