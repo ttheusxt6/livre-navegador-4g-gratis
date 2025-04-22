@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from "react";
 import ConnectionButton from "@/components/ConnectionButton";
 import ServerList, { Server } from "@/components/ServerList";
 import ConnectionStats from "@/components/ConnectionStats";
 import Header from "@/components/Header";
+import AdvancedOptions from "@/components/AdvancedOptions";
 
 const dummyServers: Server[] = [
   {
@@ -54,10 +54,11 @@ const Index = () => {
   const [signalStrength, setSignalStrength] = useState(0);
   const [servers, setServers] = useState<Server[]>(dummyServers);
   const [connectionStartTime, setConnectionStartTime] = useState<Date | null>(null);
+  const [mode, setMode] = useState<"funcional" | "avancado">("funcional");
+  const [advancedConfig, setAdvancedConfig] = useState<any>(null);
 
   const toggleConnection = () => {
     if (isConnected) {
-      // Desconectando
       setIsConnected(false);
       setConnectionStartTime(null);
       setDownloadSpeed("0 KB/s");
@@ -66,7 +67,6 @@ const Index = () => {
       return;
     }
 
-    // Conectando
     if (!selectedServer) {
       alert("Por favor, selecione um servidor antes de conectar.");
       return;
@@ -74,14 +74,12 @@ const Index = () => {
 
     setIsConnecting(true);
 
-    // Simulação de conexão
     setTimeout(() => {
       setIsConnected(true);
       setIsConnecting(false);
       setConnectionStartTime(new Date());
       setSignalStrength(85);
       
-      // Simulando velocidades variadas
       const updateSpeeds = () => {
         if (!isConnected) return;
         
@@ -95,7 +93,6 @@ const Index = () => {
         setSignalStrength(newSignal);
       };
       
-      // Atualiza velocidades a cada 3 segundos
       const speedInterval = setInterval(updateSpeeds, 3000);
       updateSpeeds();
       
@@ -108,7 +105,6 @@ const Index = () => {
   };
 
   const downloadServer = (serverId: string) => {
-    // Simula download do arquivo de configuração
     const updatedServers = servers.map(server => 
       server.id === serverId ? { ...server, isDownloaded: true } : server
     );
@@ -116,7 +112,6 @@ const Index = () => {
     setSelectedServer(serverId);
   };
 
-  // Atualiza o tempo de conexão
   useEffect(() => {
     let interval: number | null = null;
     
@@ -152,7 +147,6 @@ const Index = () => {
         onOpenSettings={() => {}}
         onOpenProfile={() => {}}
       />
-      
       <div className="flex-1 container mx-auto px-4 py-6 flex flex-col">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-center text-gray-800">
@@ -162,43 +156,89 @@ const Index = () => {
             Conecte-se à internet gratuitamente através da sua rede 4G
           </p>
         </div>
-        
-        <div className="flex-1 flex flex-col items-center justify-center mb-8">
-          <div className={`mb-4 transition-all duration-300 ${isConnected ? 'scale-110' : ''}`}>
-            <ConnectionButton
-              isConnected={isConnected}
-              isConnecting={isConnecting}
-              onClick={toggleConnection}
-            />
-          </div>
-          
-          <div className="text-center mt-2">
-            <p className="text-sm text-gray-500">
-              {isConnected 
-                ? "Você está conectado e navegando gratuitamente" 
-                : "Clique para conectar à internet grátis"}
-            </p>
-          </div>
+        <div className="flex justify-center mb-4 gap-2">
+          <button
+            className={`px-4 py-2 rounded-l font-semibold border transition-colors ${
+              mode === "funcional"
+                ? "bg-vpn-blue text-white border-vpn-blue"
+                : "bg-white text-vpn-blue border-gray-300 hover:bg-blue-50"
+            }`}
+            onClick={() => setMode("funcional")}
+            type="button"
+          >
+            Servidores funcionais
+          </button>
+          <button
+            className={`px-4 py-2 rounded-r font-semibold border transition-colors ${
+              mode === "avancado"
+                ? "bg-vpn-connected text-white border-vpn-connected"
+                : "bg-white text-vpn-connected border-gray-300 hover:bg-green-50"
+            }`}
+            onClick={() => setMode("avancado")}
+            type="button"
+          >
+            Avançado
+          </button>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ServerList
-            servers={servers}
-            selectedServer={selectedServer}
-            onSelectServer={selectServer}
-            onDownloadServer={downloadServer}
-          />
-          
-          <ConnectionStats
-            isConnected={isConnected}
-            connectionTime={connectionTime}
-            downloadSpeed={downloadSpeed}
-            uploadSpeed={uploadSpeed}
-            signalStrength={signalStrength}
-          />
-        </div>
+        {mode === "funcional" ? (
+          <div className="flex-1 flex flex-col items-center justify-center mb-8">
+            <div className={`mb-4 transition-all duration-300 ${isConnected ? 'scale-110' : ''}`}>
+              <ConnectionButton
+                isConnected={isConnected}
+                isConnecting={isConnecting}
+                onClick={toggleConnection}
+              />
+            </div>
+            <div className="text-center mt-2">
+              <p className="text-sm text-gray-500">
+                {isConnected 
+                  ? "Você está conectado e navegando gratuitamente" 
+                  : "Clique para conectar à internet grátis"}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-8">
+              <ServerList
+                servers={servers}
+                selectedServer={selectedServer}
+                onSelectServer={selectServer}
+                onDownloadServer={downloadServer}
+              />
+              <ConnectionStats
+                isConnected={isConnected}
+                connectionTime={connectionTime}
+                downloadSpeed={downloadSpeed}
+                uploadSpeed={uploadSpeed}
+                signalStrength={signalStrength}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center">
+            <div className="mb-4 transition-all duration-300">
+              <ConnectionButton
+                isConnected={isConnected}
+                isConnecting={isConnecting}
+                onClick={toggleConnection}
+              />
+            </div>
+            <div className="text-center mt-2 mb-4">
+              <p className="text-sm text-gray-500">
+                Use as opções avançadas abaixo para customizar sua conexão (recomendado apenas para usuários experientes).
+              </p>
+            </div>
+            <div className="w-full max-w-lg">
+              <AdvancedOptions onChange={setAdvancedConfig} />
+              <ConnectionStats
+                isConnected={isConnected}
+                connectionTime={connectionTime}
+                downloadSpeed={downloadSpeed}
+                uploadSpeed={uploadSpeed}
+                signalStrength={signalStrength}
+              />
+            </div>
+          </div>
+        )}
       </div>
-      
       <footer className="bg-white border-t border-gray-200 py-3 px-4">
         <p className="text-center text-sm text-gray-500">
           4G Livre Navegador © {new Date().getFullYear()} - Use para fins educacionais
