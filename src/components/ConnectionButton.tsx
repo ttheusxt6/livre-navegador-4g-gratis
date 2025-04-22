@@ -34,10 +34,11 @@ const ConnectionButton: React.FC<ConnectionButtonProps> = ({
         buttonColor,
         "flex items-center justify-center text-white font-bold text-lg",
         "transition-all duration-300 transform hover:scale-105",
-        "focus:outline-none focus:ring-4 focus:ring-blue-300",
+        "focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800",
         "disabled:opacity-70 disabled:cursor-not-allowed",
         className
       )}
+      aria-label={buttonText}
     >
       <div className="absolute inset-0 rounded-full border-4 border-transparent">
         {isConnected && (

@@ -30,7 +30,7 @@ const ServerList: React.FC<ServerListProps> = ({
 }) => {
   return (
     <div className={cn("rounded-lg overflow-hidden", className)}>
-      <h2 className="text-lg font-bold mb-2 text-gray-800">Arquivos de Conexão 4G</h2>
+      <h2 className="text-lg font-bold mb-2 text-gray-800 dark:text-gray-200">Arquivos de Conexão 4G</h2>
       <div className="space-y-2">
         {servers.map((server) => (
           <div
@@ -38,8 +38,8 @@ const ServerList: React.FC<ServerListProps> = ({
             className={cn(
               "flex items-center justify-between px-4 py-3 rounded-lg border transition-colors",
               selectedServer === server.id
-                ? "border-vpn-blue bg-blue-50"
-                : "border-gray-200 bg-white",
+                ? "border-vpn-blue bg-blue-50 dark:bg-blue-900/20 dark:border-blue-700"
+                : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800",
               !server.isAvailable && "opacity-50"
             )}
           >
@@ -51,18 +51,18 @@ const ServerList: React.FC<ServerListProps> = ({
                 )}
               />
               <div>
-                <div className="font-medium">{server.name}</div>
-                <div className="text-sm text-gray-500">{server.description}</div>
+                <div className="font-medium text-gray-800 dark:text-gray-200">{server.name}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">{server.description}</div>
               </div>
             </div>
             
             <div className="flex items-center space-x-4">
-              <div className="flex items-center text-sm text-gray-500">
+              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                 <Signal className="h-4 w-4 mr-1" />
                 <span>{server.speed}</span>
               </div>
               
-              <div className="flex items-center text-sm text-gray-500">
+              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                 <span>{server.ping}ms</span>
               </div>
               
@@ -74,16 +74,18 @@ const ServerList: React.FC<ServerListProps> = ({
                       className={cn(
                         "p-2 rounded-full",
                         selectedServer === server.id
-                          ? "bg-vpn-blue text-white"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                          ? "bg-vpn-blue text-white dark:bg-vpn-blue/80"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                       )}
+                      aria-label={`Selecionar servidor ${server.name}`}
                     >
                       <Check className="h-5 w-5" />
                     </button>
                   ) : (
                     <button
                       onClick={() => onDownloadServer(server.id)}
-                      className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      aria-label={`Baixar servidor ${server.name}`}
                     >
                       <Download className="h-5 w-5" />
                     </button>
@@ -94,6 +96,7 @@ const ServerList: React.FC<ServerListProps> = ({
           </div>
         ))}
       </div>
+      <div className="mt-2 text-right text-xs text-gray-500 dark:text-gray-400">by Matheus</div>
     </div>
   );
 };
