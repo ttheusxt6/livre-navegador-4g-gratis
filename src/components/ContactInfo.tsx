@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Bug, Whatsapp } from "lucide-react";
+import { Bug, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 
@@ -53,7 +53,7 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ className }) => {
         
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
           <div className="flex items-center mb-2">
-            <Whatsapp className="h-5 w-5 mr-2 text-green-500" />
+            <MessageSquare className="h-5 w-5 mr-2 text-green-500" />
             <h4 className="font-medium text-gray-800 dark:text-gray-200">Comprar Arquivos</h4>
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
@@ -70,7 +70,7 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ className }) => {
             onClick={handleWhatsappRedirect}
             className="w-full py-2 bg-green-500 hover:bg-green-600 text-white rounded flex items-center justify-center"
           >
-            <Whatsapp className="h-4 w-4 mr-2" /> Abrir WhatsApp
+            <MessageSquare className="h-4 w-4 mr-2" /> Abrir WhatsApp
           </button>
         </div>
       </div>
