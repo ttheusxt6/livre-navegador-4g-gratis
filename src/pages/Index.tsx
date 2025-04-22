@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ConnectionButton from "@/components/ConnectionButton";
 import ServerList, { Server } from "@/components/ServerList";
 import ConnectionStats from "@/components/ConnectionStats";
 import Header from "@/components/Header";
 import AdvancedOptions from "@/components/AdvancedOptions";
+import { toast } from "@/hooks/use-toast";
 
 const dummyServers: Server[] = [
   {
@@ -56,6 +57,7 @@ const Index = () => {
   const [connectionStartTime, setConnectionStartTime] = useState<Date | null>(null);
   const [mode, setMode] = useState<"funcional" | "avancado">("funcional");
   const [advancedConfig, setAdvancedConfig] = useState<any>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const toggleConnection = () => {
     if (isConnected) {
@@ -82,20 +84,15 @@ const Index = () => {
       
       const updateSpeeds = () => {
         if (!isConnected) return;
-        
         const downloadAmount = Math.floor(Math.random() * 500) + 100;
         const uploadAmount = Math.floor(Math.random() * 200) + 50;
-        
         setDownloadSpeed(`${downloadAmount} KB/s`);
         setUploadSpeed(`${uploadAmount} KB/s`);
-        
         const newSignal = Math.max(65, Math.min(95, signalStrength + Math.floor(Math.random() * 11) - 5));
         setSignalStrength(newSignal);
       };
-      
       const speedInterval = setInterval(updateSpeeds, 3000);
       updateSpeeds();
-      
       return () => clearInterval(speedInterval);
     }, 2000);
   };
@@ -114,30 +111,54 @@ const Index = () => {
 
   useEffect(() => {
     let interval: number | null = null;
-    
     if (isConnected && connectionStartTime) {
       interval = window.setInterval(() => {
         const now = new Date();
         const diffMs = now.getTime() - connectionStartTime.getTime();
-        
         const hours = Math.floor(diffMs / (1000 * 60 * 60));
         const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
-        
         const formattedHours = hours.toString().padStart(2, '0');
         const formattedMinutes = minutes.toString().padStart(2, '0');
         const formattedSeconds = seconds.toString().padStart(2, '0');
-        
         setConnectionTime(`${formattedHours}:${formattedMinutes}:${formattedSeconds}`);
       }, 1000);
     } else {
       setConnectionTime("00:00:00");
     }
-    
     return () => {
       if (interval) clearInterval(interval);
     };
   }, [isConnected, connectionStartTime]);
+
+  const handleImportTunnel = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      toast({ description: "Nenhum arquivo selecionado." });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      toast({ title: "Arquivo importado!", description: `Arquivo "${file.name}" carregado com sucesso.` });
+    };
+    reader.onerror = () => {
+      toast({ title: "Erro ao importar", description: "Ocorreu um erro ao ler o arquivo." });
+    };
+    reader.readAsText(file);
+  };
+
+  const handleExportTunnel = () => {
+    const data = JSON.stringify(advancedConfig || { info: "Nenhuma configuração personalizada" }, null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "tunel-4g-config.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast({ title: "Arquivo exportado!", description: "Suas configurações foram exportadas." });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -147,18 +168,18 @@ const Index = () => {
         onOpenSettings={() => {}}
         onOpenProfile={() => {}}
       />
-      <div className="flex-1 container mx-auto px-4 py-6 flex flex-col">
+      <div className="flex-1 container mx-auto px-2 py-4 flex flex-col">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-center text-gray-800">
             Navegador 4G Grátis
           </h1>
-          <p className="text-center text-gray-600 mt-1">
+          <p className="text-center text-gray-600 mt-1 text-sm">
             Conecte-se à internet gratuitamente através da sua rede 4G
           </p>
         </div>
         <div className="flex justify-center mb-4 gap-2">
           <button
-            className={`px-4 py-2 rounded-l font-semibold border transition-colors ${
+            className={`px-4 py-2 rounded-l font-semibold border transition-colors text-xs sm:text-base ${
               mode === "funcional"
                 ? "bg-vpn-blue text-white border-vpn-blue"
                 : "bg-white text-vpn-blue border-gray-300 hover:bg-blue-50"
@@ -169,7 +190,7 @@ const Index = () => {
             Servidores funcionais
           </button>
           <button
-            className={`px-4 py-2 rounded-r font-semibold border transition-colors ${
+            className={`px-4 py-2 rounded-r font-semibold border transition-colors text-xs sm:text-base ${
               mode === "avancado"
                 ? "bg-vpn-connected text-white border-vpn-connected"
                 : "bg-white text-vpn-connected border-gray-300 hover:bg-green-50"
@@ -181,7 +202,9 @@ const Index = () => {
           </button>
         </div>
         {mode === "funcional" ? (
-          <div className="flex-1 flex flex-col items-center justify-center mb-8">
+          <div
+            className="flex-1 flex flex-col items-center justify-center mb-8"
+          >
             <div className={`mb-4 transition-all duration-300 ${isConnected ? 'scale-110' : ''}`}>
               <ConnectionButton
                 isConnected={isConnected}
@@ -190,7 +213,7 @@ const Index = () => {
               />
             </div>
             <div className="text-center mt-2">
-              <p className="text-sm text-gray-500">
+              <p className="text-xs sm:text-sm text-gray-500">
                 {isConnected 
                   ? "Você está conectado e navegando gratuitamente" 
                   : "Clique para conectar à internet grátis"}
@@ -213,8 +236,8 @@ const Index = () => {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center">
-            <div className="mb-4 transition-all duration-300">
+          <div className="flex flex-col items-center w-full">
+            <div className="mb-4 transition-all duration-300 w-full flex flex-col items-center">
               <ConnectionButton
                 isConnected={isConnected}
                 isConnecting={isConnecting}
@@ -222,11 +245,34 @@ const Index = () => {
               />
             </div>
             <div className="text-center mt-2 mb-4">
-              <p className="text-sm text-gray-500">
+              <p className="text-xs sm:text-sm text-gray-500">
                 Use as opções avançadas abaixo para customizar sua conexão (recomendado apenas para usuários experientes).
               </p>
             </div>
             <div className="w-full max-w-lg">
+              <div className="flex gap-2 mb-4 flex-col xs:flex-row items-stretch xs:items-center justify-center">
+                <button
+                  type="button"
+                  className="flex-1 bg-vpn-blue text-white px-4 py-2 rounded font-medium text-xs sm:text-base shadow hover:bg-blue-800 transition-colors"
+                  onClick={() => importInputRef.current?.click()}
+                >
+                  Importar arquivo túnel
+                </button>
+                <input
+                  ref={importInputRef}
+                  type="file"
+                  accept=".json,.ovpn,.conf"
+                  className="hidden"
+                  onChange={handleImportTunnel}
+                />
+                <button
+                  type="button"
+                  className="flex-1 bg-vpn-green text-white px-4 py-2 rounded font-medium text-xs sm:text-base shadow hover:bg-green-700 transition-colors"
+                  onClick={handleExportTunnel}
+                >
+                  Exportar arquivo túnel
+                </button>
+              </div>
               <AdvancedOptions onChange={setAdvancedConfig} />
               <ConnectionStats
                 isConnected={isConnected}
@@ -239,8 +285,8 @@ const Index = () => {
           </div>
         )}
       </div>
-      <footer className="bg-white border-t border-gray-200 py-3 px-4">
-        <p className="text-center text-sm text-gray-500">
+      <footer className="bg-white border-t border-gray-200 py-3 px-2 text-xs sm:text-sm">
+        <p className="text-center text-gray-500">
           4G Livre Navegador © {new Date().getFullYear()} - Use para fins educacionais
         </p>
       </footer>
