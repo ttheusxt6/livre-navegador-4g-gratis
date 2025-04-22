@@ -1,0 +1,11 @@
+
+{
+  "appId": "app.lovable.8ea3c6c8ed2d420488cf211fa1bc3800",
+  "appName": "livre-navegador-4g-gratis",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://8ea3c6c8-ed2d-4204-88cf-211fa1bc3800.lovableproject.com?forceHideBadge=true",
+    "cleartext": true
+  }
+}
