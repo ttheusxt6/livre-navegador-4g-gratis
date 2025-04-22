@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import ConnectionButton from "@/components/ConnectionButton";
 import ServerList, { Server } from "@/components/ServerList";
@@ -59,7 +58,7 @@ const Index = () => {
   const [signalStrength, setSignalStrength] = useState(0);
   const [servers, setServers] = useState<Server[]>(dummyServers);
   const [connectionStartTime, setConnectionStartTime] = useState<Date | null>(null);
-  const [mode, setMode] = useState<"funcional" | "avancado" | "guia">("funcional");
+  const [mode, setMode] = useState<"funcional" | "avancado" | "guia" | "configuracao">("funcional");
   const [advancedConfig, setAdvancedConfig] = useState<any>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
   const speedIntervalRef = useRef<number | null>(null);
@@ -73,7 +72,6 @@ const Index = () => {
       setUploadSpeed("0 KB/s");
       setSignalStrength(0);
       
-      // Clear the interval when disconnecting
       if (speedIntervalRef.current) {
         clearInterval(speedIntervalRef.current);
         speedIntervalRef.current = null;
@@ -112,7 +110,6 @@ const Index = () => {
         setSignalStrength(newSignal);
       };
       
-      // Store the interval ID to clear it later
       speedIntervalRef.current = window.setInterval(updateSpeeds, 3000);
       updateSpeeds();
       
@@ -190,7 +187,6 @@ const Index = () => {
         if (file.name.endsWith('.json')) {
           config = JSON.parse(fileContent);
           
-          // Add the file to servers list if it has required fields
           if (config.serverName) {
             const newServer = {
               id: `custom-${Date.now()}`,
@@ -227,7 +223,6 @@ const Index = () => {
     };
     reader.readAsText(file);
     
-    // Reset the input value to allow importing the same file again
     e.target.value = "";
   };
 
@@ -250,7 +245,7 @@ const Index = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(url); // Clean up the URL object
+    URL.revokeObjectURL(url);
     
     toast({ 
       title: "Arquivo exportado!", 
@@ -314,7 +309,7 @@ const Index = () => {
             Avançado
           </button>
           <button
-            className={`px-4 py-2 rounded-r font-semibold border transition-colors text-xs sm:text-base ${
+            className={`px-4 py-2 font-semibold border transition-colors text-xs sm:text-base ${
               mode === "guia"
                 ? "bg-vpn-blue text-white border-vpn-blue dark:bg-vpn-blue/80"
                 : "bg-white text-vpn-blue border-gray-300 hover:bg-blue-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
@@ -323,6 +318,17 @@ const Index = () => {
             type="button"
           >
             Como conectar
+          </button>
+          <button
+            className={`px-4 py-2 rounded-r font-semibold border transition-colors text-xs sm:text-base ${
+              mode === "configuracao"
+                ? "bg-vpn-blue text-white border-vpn-blue dark:bg-vpn-blue/80"
+                : "bg-white text-vpn-blue border-gray-300 hover:bg-blue-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
+            }`}
+            onClick={() => setMode("configuracao")}
+            type="button"
+          >
+            Configuração
           </button>
         </div>
         {mode === "funcional" ? (
@@ -407,7 +413,7 @@ const Index = () => {
               />
             </div>
           </div>
-        ) : (
+        ) : mode === "guia" ? (
           <div className="w-full max-w-2xl mx-auto">
             <ConnectionGuide className="mb-6" />
             <div className="flex justify-center">
@@ -419,6 +425,75 @@ const Index = () => {
                 } flex items-center justify-center text-white font-bold text-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-70 disabled:cursor-not-allowed`}
               >
                 {isConnecting ? "Conectando..." : isConnected ? "Desconectar" : "Conectar"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="w-full max-w-2xl mx-auto">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
+              <h3 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Configuração da Conexão</h3>
+              
+              <div className="space-y-6">
+                <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-3">Passo a passo para se conectar:</h4>
+                  <ol className="list-decimal pl-5 text-gray-600 dark:text-gray-400 space-y-4">
+                    <li>
+                      <p className="font-medium">Selecione uma operadora:</p>
+                      <p className="text-sm mt-1">Escolha sua operadora de telefonia na lista de servidores disponíveis.</p>
+                    </li>
+                    <li>
+                      <p className="font-medium">Baixe o arquivo de configuração:</p>
+                      <p className="text-sm mt-1">Clique no ícone de download ao lado do servidor para baixar o arquivo.</p>
+                    </li>
+                    <li>
+                      <p className="font-medium">Verifique sua conexão 4G:</p>
+                      <p className="text-sm mt-1">Assegure-se de que está conectado à rede móvel 4G da sua operadora.</p>
+                    </li>
+                    <li>
+                      <p className="font-medium">Clique em "Conectar":</p>
+                      <p className="text-sm mt-1">Pressione o botão grande de conexão e aguarde enquanto o app se conecta ao servidor.</p>
+                    </li>
+                    <li>
+                      <p className="font-medium">Pronto para navegar:</p>
+                      <p className="text-sm mt-1">Quando o botão ficar verde, você estará conectado e navegando gratuitamente!</p>
+                    </li>
+                  </ol>
+                </div>
+                
+                <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-3">Solução de problemas:</h4>
+                  <ul className="list-disc pl-5 text-gray-600 dark:text-gray-400 space-y-2">
+                    <li>Se não conseguir conectar, tente outros servidores disponíveis</li>
+                    <li>Certifique-se de que seu plano está ativo e com dados disponíveis</li>
+                    <li>Verifique se está em uma área com boa cobertura 4G</li>
+                    <li>Reinicie o aplicativo caso continue enfrentando problemas</li>
+                    <li>Em modo avançado, tente diferentes configurações de portas e protocolos</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800">
+                  <h4 className="font-medium text-blue-800 dark:text-blue-300 mb-2">Configurações avançadas:</h4>
+                  <p className="text-sm text-blue-700 dark:text-blue-400 mb-3">
+                    O modo avançado permite configurações personalizadas para usuários experientes.
+                  </p>
+                  <ul className="list-disc pl-5 text-blue-600 dark:text-blue-300 space-y-1 text-sm">
+                    <li>Escolha entre protocolos HTTP, TCP ou UDP</li>
+                    <li>Configure portas personalizadas para contornar bloqueios</li>
+                    <li>Ajuste payloads para diferentes operadoras</li>
+                    <li>Importe e exporte suas configurações para uso posterior</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <p className="text-center text-gray-500 dark:text-gray-400 text-xs mt-6">by Matheus</p>
+            </div>
+            
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={() => setMode("funcional")}
+                className="bg-vpn-blue dark:bg-vpn-blue/80 text-white px-6 py-3 rounded-lg font-medium shadow hover:bg-blue-800 transition-colors"
+              >
+                Voltar para conectar
               </button>
             </div>
           </div>
