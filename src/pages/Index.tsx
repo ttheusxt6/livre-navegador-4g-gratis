@@ -388,17 +388,6 @@ const Index = () => {
           </button>
           <button
             className={`px-3 sm:px-4 py-2 font-semibold border transition-colors text-xs ${
-              mode === "bateria"
-                ? "bg-vpn-blue text-white border-vpn-blue dark:bg-vpn-blue/80"
-                : "bg-white text-vpn-blue border-gray-300 hover:bg-blue-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
-            }`}
-            onClick={() => setMode("bateria")}
-            type="button"
-          >
-            Bateria
-          </button>
-          <button
-            className={`px-3 sm:px-4 py-2 font-semibold border transition-colors text-xs ${
               mode === "avancado"
                 ? "bg-vpn-connected text-white border-vpn-connected dark:bg-vpn-connected/80"
                 : "bg-white text-vpn-connected border-gray-300 hover:bg-green-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
@@ -418,28 +407,6 @@ const Index = () => {
             type="button"
           >
             Como conectar
-          </button>
-          <button
-            className={`px-3 sm:px-4 py-2 font-semibold border transition-colors text-xs ${
-              mode === "configuracao"
-                ? "bg-vpn-blue text-white border-vpn-blue dark:bg-vpn-blue/80"
-                : "bg-white text-vpn-blue border-gray-300 hover:bg-blue-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
-            }`}
-            onClick={() => setMode("configuracao")}
-            type="button"
-          >
-            Configuração
-          </button>
-          <button
-            className={`px-3 sm:px-4 py-2 font-semibold border transition-colors text-xs ${
-              mode === "contato"
-                ? "bg-vpn-blue text-white border-vpn-blue dark:bg-vpn-blue/80"
-                : "bg-white text-vpn-blue border-gray-300 hover:bg-blue-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
-            }`}
-            onClick={() => setMode("contato")}
-            type="button"
-          >
-            Contato
           </button>
         </div>
         {mode === "funcional" ? (
