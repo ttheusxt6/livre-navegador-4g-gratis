@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Steps } from "@/components/ui/steps";
 import { Wifi, Download, Settings, ArrowRight } from "lucide-react";
 
 interface ConnectionGuideProps {
